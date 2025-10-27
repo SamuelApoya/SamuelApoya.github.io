@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const exitGameBtn = document.getElementById('exit-game');
   const switchers = document.querySelectorAll('.switch-to-game');
 
-  const hideModal = () => { if (modal) modal.style.display = 'none'; };
+  const hideModal = () => {
+    if (modal) modal.style.display = 'none';
+  };
 
   const showPortfolio = () => {
     hideModal();
@@ -29,22 +31,27 @@ document.addEventListener('DOMContentLoaded', () => {
     gameView.classList.remove('hidden');
 
     if (!window.THREE) {
-      alert('Three.js did not load. Check your network and script tag URL.');
+      alert('Three.js did not load. Check the script URL.');
       return;
     }
     if (typeof window.initGame === 'function') window.initGame();
     if (typeof window.startAudioScene === 'function') window.startAudioScene();
   };
 
-  // Modal choices
-  if (traditionalPath) traditionalPath.addEventListener('click', showPortfolio);
-  if (adventurePath)  adventurePath.addEventListener('click',  showGame);
+  if (traditionalPath) {
+    traditionalPath.addEventListener('click', showPortfolio);
+  }
+  if (adventurePath) {
+    adventurePath.addEventListener('click', showGame);
+  }
 
-  // In-page triggers (hero + nav button)
-  switchers.forEach((btn) => btn.addEventListener('click', showGame));
+  switchers.forEach((btn) => {
+    btn.addEventListener('click', showGame);
+  });
 
-  // Exit from game
-  if (exitGameBtn) exitGameBtn.addEventListener('click', showPortfolio);
+  if (exitGameBtn) {
+    exitGameBtn.addEventListener('click', showPortfolio);
+  }
 
   // Contact form handler
   const form = document.getElementById('contact-form');
@@ -54,31 +61,46 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const name = (document.getElementById('cf-name')?.value || '').trim();
-      const email = (document.getElementById('cf-email')?.value || '').trim();
-      const message = (document.getElementById('cf-message')?.value || '').trim();
+      const name =
+        (document.getElementById('cf-name')?.value || '')
+          .trim();
+      const email =
+        (document.getElementById('cf-email')?.value || '')
+          .trim();
+      const message =
+        (document.getElementById('cf-message')?.value || '')
+          .trim();
 
       if (!name || !email || !message) {
-        if (status) status.textContent = 'Please fill in all fields.';
-        return;
-      }
-      // Email check
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        if (status) status.textContent = 'Please enter a valid email.';
+        if (status) status.textContent =
+          'Please fill in all fields.';
         return;
       }
 
-      // Build a mailto link
-      const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+      const okEmail =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!okEmail) {
+        if (status) status.textContent =
+          'Please enter a valid email.';
+        return;
+      }
+
+      const subject = encodeURIComponent(
+        `Portfolio contact from ${name}`
+      );
       const body = encodeURIComponent(
         `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n`
       );
-      const href = `mailto:samuel@example.com?subject=${subject}&body=${body}`;
+      const href =
+        `mailto:samuel@example.com?subject=${subject}&body=${body}`;
       window.location.href = href;
 
       if (status) {
-        status.textContent = "Opening your email client…";
-        setTimeout(() => { status.textContent = "If your mail app didn't open, email me directly at samuel@example.com."; }, 2200);
+        status.textContent = 'Opening your email client…';
+        setTimeout(() => {
+          status.textContent =
+            "If your mail app didn't open, email me at samuel@example.com.";
+        }, 2200);
       }
 
       form.reset();

@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (traditionalPath) traditionalPath.addEventListener('click', showPortfolio);
   if (adventurePath)  adventurePath.addEventListener('click',  showGame);
 
-  // In-page triggers (hero + nav button)
+  // In-page triggers
   switchers.forEach((btn) => btn.addEventListener('click', showGame));
 
   // Exit from game
@@ -82,6 +82,50 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       form.reset();
+    });
+  }
+
+  /* Mobile Hamburger Menu */
+  const navToggle = document.getElementById('nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  const closeMobileNav = () => {
+    if (!mobileNav || !navToggle) return;
+    mobileNav.classList.add('hidden');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    navToggle.setAttribute('aria-expanded', 'false');
+  };
+
+  const openMobileNav = () => {
+    if (!mobileNav || !navToggle) return;
+    mobileNav.classList.remove('hidden');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    navToggle.setAttribute('aria-expanded', 'true');
+  };
+
+  if (navToggle && mobileNav) {
+    navToggle.addEventListener('click', () => {
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeMobileNav();
+      else openMobileNav();
+    });
+
+    // Close menu when a link is tapped
+    mobileNav.addEventListener('click', (e) => {
+      const el = e.target;
+      if (el.matches('.mobile-nav-link, .mobile-nav-cta')) {
+        closeMobileNav();
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileNav();
+    });
+
+    // Close if viewport grows to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 860) closeMobileNav();
     });
   }
 });

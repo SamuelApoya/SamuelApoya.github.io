@@ -40,10 +40,23 @@
 
   <!-- Traditional Portfolio View -->
   <div id="traditional-view" class="view-container hidden">
-    <nav class="top-nav">
+    <nav class="top-nav" role="navigation" aria-label="Primary">
       <a class="nav-brand" href="#home">Samuel</a>
 
-      <!-- RIGHT-ALIGNED NAV -->
+      <!-- mobile only -->
+      <button
+        id="nav-toggle"
+        class="hamburger"
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-controls="mobile-nav"
+        aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- RIGHT-ALIGNED NAV-->
       <div class="nav-right">
         <ul class="nav-links">
           <li><a class="nav-link" href="#home">Home</a></li>
@@ -55,7 +68,18 @@
       </div>
     </nav>
 
-    <!-- HOME (Hero) -->
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-nav" class="mobile-nav hidden" aria-hidden="true">
+      <ul class="mobile-nav-links">
+        <li><a class="mobile-nav-link" href="#home">Home</a></li>
+        <li><a class="mobile-nav-link" href="#about">About</a></li>
+        <li><a class="mobile-nav-link" href="#portfolio">Portfolio</a></li>
+        <li><a class="mobile-nav-link" href="#contact">Contact</a></li>
+      </ul>
+      <button class="switch-to-game mobile-nav-cta">🗺️ Explore Island</button>
+    </div>
+
+    <!-- HOME  -->
     <section id="home" class="hero">
       <div class="hero-media">
         <img
@@ -147,7 +171,7 @@
     </footer>
   </div>
 
-  <!-- Game / Adventure View -->
+  <!-- Adventure View -->
   <div id="game-view" class="view-container hidden">
     <div id="game-ui">
       <button id="exit-game" class="exit-btn">← Back to Portfolio</button>
@@ -158,6 +182,11 @@
           <h2 id="discovery-title"></h2>
           <div id="discovery-body"></div>
         </div>
+      </div>
+
+      <!-- Pirate warning banner -->
+      <div id="shore-warning" class="shore-warning hidden" role="status" aria-live="polite">
+        ☠️ Beware of pirate ships
       </div>
 
       <div id="instructions" class="instructions">
@@ -176,7 +205,7 @@
       }
     });
   </script>
-  <!-- Load three.js BEFORE interact/game (defer) -->
+  <!-- Load three.js BEFORE interact/game -->
   <script defer src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
   <script defer src="interact.js"></script>
   <script defer src="game.js"></script>

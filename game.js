@@ -13,12 +13,16 @@ let clouds = [];
 let stormLight;
 let birds = [];
 
-// Audio for adventure mode: birds chirping + thunder
+// Audio for adventure mode
 let audioCtx, masterGain;
 let birdsTimer = null;
 let thunderTimer = null;
-let audioArmed = false; // created on first gesture
+let audioArmed = false;
 let audioRunning = false;
+
+// UI refs for warnings
+let shoreWarnEl = null;
+let shoreWarnVisible = false;
 
 function armAudioOnce() {
   if (audioArmed) return;
@@ -39,7 +43,7 @@ function startAudioScene() {
   if (audioRunning) return;
   audioRunning = true;
 
-  // Birds — small random chirps
+  // Small random chirps
   const birdChirp = () => {
     const now = audioCtx.currentTime;
     const nChirps = 2 + Math.floor(Math.random() * 3);
@@ -50,7 +54,7 @@ function startAudioScene() {
       const pan = (audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null);
 
       osc.type = 'triangle';
-      const base = 1600 + Math.random() * 800; // sweet chirp band
+      const base = 1600 + Math.random() * 800;
       osc.frequency.setValueAtTime(base, t);
       osc.frequency.exponentialRampToValueAtTime(base * (1.2 + Math.random() * 0.4), t + 0.12);
 
@@ -74,7 +78,7 @@ function startAudioScene() {
     if (Math.random() < 0.7) birdChirp();
   }, 2200);
 
-  // Thunder — filtered noise burst + lightning flash
+  // Thunder sounds
   const thunder = () => {
     if (!audioCtx) return;
     const dur = 2.8 + Math.random() * 1.4;
@@ -82,7 +86,7 @@ function startAudioScene() {
     const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) {
-      data[i] = (Math.random() * 2 - 1) * (1.0 - i / data.length); // decaying noise
+      data[i] = (Math.random() * 2 - 1) * (1.0 - i / data.length);
     }
 
     const src = audioCtx.createBufferSource();
@@ -139,6 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Prime audio on first gesture
   const primeAudio = () => armAudioOnce();
   ['click','keydown','touchstart'].forEach(ev => document.addEventListener(ev, primeAudio, { once: true }));
+
+  // Grab shore warning element
+  shoreWarnEl = document.getElementById('shore-warning');
 });
 
 // DISCOVERIES CONTENT
@@ -152,7 +159,7 @@ const discoveries = {
         <li><strong>Impact:</strong> 40% faster processing</li>
         <li><strong>Scale:</strong> 100k+ predictions/day</li>
       </ul>`},
-  temple: { title: '⛩️ Sacred Temple', content: `
+  temple: { title: 'Sacred Temple', content: `
       <p>The Temple holds ancient wisdom and modern innovation!</p>
       <h3>Real-time Analytics Dashboard</h3>
       <p>Processes 10,000+ events per second with sub-100ms latency.</p>
@@ -168,7 +175,7 @@ const discoveries = {
         <li><strong>Benefit:</strong> 60% faster deploys</li>
         <li><strong>Reliability:</strong> 99.9% uptime</li>
       </ul>`},
-  lighthouse: { title: '🗼 Ancient Lighthouse', content: `
+  lighthouse: { title: 'Ancient Lighthouse', content: `
       <p>The Lighthouse guides travelers safely home.</p>
       <h3>About Me</h3>
       <p>I'm Samuel, a Software and ML Engineer focused on clear, reliable systems.</p>
@@ -176,7 +183,7 @@ const discoveries = {
       <p>📧 <a href="mailto:samuel@example.com">Email</a><br>
          💻 <a target="_blank" href="https://github.com/samuelapoya">GitHub</a><br>
          💼 <a target="_blank" href="https://linkedin.com">LinkedIn</a></p>`},
-  ruins: { title: '🏛️ Ancient Ruins', content: `
+  ruins: { title: 'Ancient Ruins', content: `
       <p>Secrets of distributed systems lie within.</p>
       <h3>Microservices Architecture</h3>
       <ul>
@@ -184,7 +191,7 @@ const discoveries = {
         <li><strong>Scale:</strong> 5M+ requests/day</li>
         <li><strong>Latency:</strong> &lt;50ms</li>
       </ul>`},
-  statue: { title: '🗿 Mystical Pillar', content: `
+  statue: { title: 'Mystical Pillar', content: `
       <p>The ancient pillar watches over the island's knowledge.</p>
       <h3>AI Chatbot System</h3>
       <ul>
@@ -236,7 +243,7 @@ window.initGame = function () {
   const terrain = createTerrain(); scene.add(terrain);
   scene.add(createBeachRing());
   scene.add(createOcean());
-  addCollider(0, 0, ISLAND_R); // island boundary
+  addCollider(0, 0, ISLAND_R);
 
   // Player
   player = createPlayer();
@@ -287,7 +294,7 @@ window.initGame = function () {
   animate();
 };
 
-// SKY / TERRAIN / OCEAN
+// SKY, TERRAIN, OCEAN
 function createStormSky() {
   const canvas = document.createElement('canvas');
   canvas.width = 2; canvas.height = 256;
@@ -348,7 +355,7 @@ function createOcean() {
   return water;
 }
 
-// ===== CLOUDS & LIGHTNING VISUAL =====
+// CLOUDS & LIGHTNING VISUAL
 function makeCloudTexture() {
   const c = document.createElement('canvas');
   c.width = 256; c.height = 128;
@@ -627,7 +634,7 @@ function createTreasureChest(x, y, z, r=2.6) {
   addCollider(x, z, r);
 }
 
-// SCATTER (trees/rocks add colliders; bushes do not)
+// SCATTERED VEGETATION
 function randomPalm() {
   const a = Math.random() * Math.PI * 2, d = 15 + Math.random() * 55;
   const x = Math.cos(a) * d, z = Math.sin(a) * d;
@@ -645,7 +652,7 @@ function randomPalm() {
   g.position.set(x, 6, z);
   scene.add(g);
 
-  addCollider(x, z, 1.3); // block around trunk
+  addCollider(x, z, 1.3);
 }
 function randomBush() {
   const a = Math.random() * Math.PI * 2, d = 10 + Math.random() * 60;
@@ -842,7 +849,7 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// MOVEMENT + COLLISIONS (bounce)
+// MOVEMENT + COLLISIONS
 function reflectVec(vx, vz, nx, nz) {
   const dot = vx*nx + vz*nz;
   return { x: vx - 2*dot*nx, z: vz - 2*dot*nz };
@@ -861,7 +868,7 @@ function tryMove(dx, dz) {
     return;
   }
 
-  // Landmark/tree/rock bounces
+  // Landmark collisions
   for (const col of colliders) {
     if (col.x === 0 && col.z === 0 && col.r === ISLAND_R) continue;
     const dxC = next.x - col.x;
@@ -877,7 +884,7 @@ function tryMove(dx, dz) {
         const tryX = player.position.clone().add(new THREE.Vector3(speedVec.x, 0, 0));
         const tryZ = player.position.clone().add(new THREE.Vector3(0, 0, speedVec.z));
         const okX = Math.hypot(tryX.x - col.x, tryX.z - col.z) >= col.r && Math.hypot(tryX.x, tryX.z) <= ISLAND_R;
-        const okZ = Math.hypot(tryZ.x - col.x, tryZ.z - col.z) >= col.r && Math.hypot(tryZ.x, tryZ.z) <= ISLAND_R;
+        const okZ = Math.hypot(tryZ.x - col.x, tryZ.z) >= col.r && Math.hypot(tryZ.x, tryZ.z) <= ISLAND_R;
         if (okX) player.position.copy(tryX);
         else if (okZ) player.position.copy(tryZ);
       }
@@ -886,6 +893,18 @@ function tryMove(dx, dz) {
   }
 
   player.position.copy(next);
+}
+
+// Shore warning UI toggle
+function setShoreWarning(show) {
+  if (!shoreWarnEl) return;
+  if (show && !shoreWarnVisible) {
+    shoreWarnEl.classList.remove('hidden');
+    shoreWarnVisible = true;
+  } else if (!show && shoreWarnVisible) {
+    shoreWarnEl.classList.add('hidden');
+    shoreWarnVisible = false;
+  }
 }
 
 // LOOP
@@ -918,7 +937,7 @@ function animate() {
     const m = obj.mesh.children.find(ch => ch.material && ch.material.transparent);
     if (m && m.material) {
       m.position.y += Math.sin(t * 2) * 0.02;
-      m.material.opacity = 0.65 + Math.sin(t * 7) * 0.35; // brighter, quicker blink
+      m.material.opacity = 0.65 + Math.sin(t * 7) * 0.35;
     }
     if (obj.type === 'windmill' && obj.mesh.userData.blades) {
       obj.mesh.userData.blades.rotation.z += 0.05;
@@ -959,6 +978,11 @@ function animate() {
       cl.position.x *= -0.8; cl.position.z *= -0.8;
     }
   }
+
+  // Pirate warning near shore
+  const distFromCenter = Math.hypot(player.position.x, player.position.z);
+  const shoreThreshold = ISLAND_R - 6; // within 6 units of shoreline
+  setShoreWarning(distFromCenter >= shoreThreshold);
 
   renderer.render(scene, camera);
 }

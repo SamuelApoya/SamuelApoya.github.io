@@ -1,4 +1,4 @@
-// mystical island adventure with ANCIENT WRECK
+// Mystical island adventure with ANCIENT WRECK added
 (function () {
   if (typeof window.THREE === 'undefined') {
     console.warn('THREE not loaded yet. game.js may be running too early.');
@@ -64,10 +64,10 @@
     const canvas = document.getElementById('game-canvas');
     if (!canvas) return;
 
-    // Scene
+    // Scene - DARKER, CLOUDIER atmosphere
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a2e);
-    scene.fog = new THREE.Fog(0x1a1a2e, 10, 60);
+    scene.background = new THREE.Color(0x0d0d1a);
+    scene.fog = new THREE.Fog(0x1a1a2e, 8, 45);
 
     // Camera
     camera = new THREE.PerspectiveCamera(
@@ -84,10 +84,10 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // Lights
-    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambient = new THREE.AmbientLight(0x4a5a7a, 0.15);
     scene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(0xffeedd, 0.8);
+    const dirLight = new THREE.DirectionalLight(0x8899aa, 0.25);
     dirLight.position.set(20, 30, 10);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 2048;
@@ -101,7 +101,7 @@
     // Ground
     const groundGeo = new THREE.PlaneGeometry(80, 80);
     const groundMat = new THREE.MeshStandardMaterial({ 
-      color: 0x3d5a4f,
+      color: 0x2a3a2f,
       roughness: 0.9 
     });
     floor = new THREE.Mesh(groundGeo, groundMat);
@@ -109,7 +109,7 @@
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // Player avatar
+    // Player
     const playerGroup = new THREE.Group();
     
     const bodyGeo = new THREE.CylinderGeometry(0.5, 0.5, 1.4, 16);
@@ -157,16 +157,17 @@
 
     const flameGeo = new THREE.ConeGeometry(0.3, 0.6, 8);
     const flameMat = new THREE.MeshStandardMaterial({
-      color: 0xff6600,
-      emissive: 0xff3300,
-      emissiveIntensity: 1
+      color: 0xff8800,
+      emissive: 0xff4400,
+      emissiveIntensity: 2
     });
     const flame = new THREE.Mesh(flameGeo, flameMat);
     flame.position.y = 1.3;
     torchGroup.add(flame);
 
-    const torchLight = new THREE.PointLight(0xff6600, 1.5, 10);
+    const torchLight = new THREE.PointLight(0xff6600, 3, 15);
     torchLight.position.y = 1.3;
+    torchLight.castShadow = true;
     torchGroup.add(torchLight);
 
     torchGroup.position.set(-8, 1, 5);
@@ -177,18 +178,19 @@
     const crystalGeo = new THREE.OctahedronGeometry(0.8, 0);
     const crystalMat = new THREE.MeshStandardMaterial({
       color: 0x00ffff,
-      emissive: 0x0088ff,
-      emissiveIntensity: 0.5,
+      emissive: 0x00ccff,
+      emissiveIntensity: 1.5,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.9
     });
     const crystal = new THREE.Mesh(crystalGeo, crystalMat);
     crystal.position.set(10, 1.2, -6);
     crystal.castShadow = true;
     scene.add(crystal);
 
-    const crystalLight = new THREE.PointLight(0x00ffff, 1, 8);
+    const crystalLight = new THREE.PointLight(0x00ffff, 2.5, 12);
     crystalLight.position.copy(crystal.position);
+    crystalLight.castShadow = true;
     scene.add(crystalLight);
 
     objects.push({ mesh: crystal, key: 'crystal', label: '💎 Crystal' });
@@ -211,7 +213,7 @@
     // Floor of wreck
     const baseGeo = new THREE.BoxGeometry(6, 0.3, 5);
     const stoneMat = new THREE.MeshStandardMaterial({ 
-      color: 0x4a4a4a,
+      color: 0x3a3a3a,
       roughness: 0.95 
     });
     const base = new THREE.Mesh(baseGeo, stoneMat);
@@ -222,7 +224,7 @@
 
     // Crumbling walls
     const wallMat = new THREE.MeshStandardMaterial({ 
-      color: 0x5a5a5a,
+      color: 0x4a4a4a,
       roughness: 0.9 
     });
 
@@ -268,15 +270,16 @@
     const symbolMat = new THREE.MeshStandardMaterial({
       color: 0x00ff88,
       emissive: 0x00ff88,
-      emissiveIntensity: 0.6
+      emissiveIntensity: 1.2
     });
     const symbol = new THREE.Mesh(symbolGeo, symbolMat);
     symbol.position.set(0, 2, -2.09);
     wreckGroup.add(symbol);
 
-    // Light inside
-    const wreckLight = new THREE.PointLight(0x00ff88, 0.8, 12);
+    // Eerie light inside
+    const wreckLight = new THREE.PointLight(0x00ff88, 2, 15);
     wreckLight.position.set(0, 2, -1);
+    wreckLight.castShadow = true;
     wreckGroup.add(wreckLight);
 
     // Position the wreck
@@ -284,7 +287,7 @@
     scene.add(wreckGroup);
 
     // Add to interactable objects
-    objects.push({ mesh: wreckGroup, key: 'wreck', label: 'Ancient Wreck' });
+    objects.push({ mesh: wreckGroup, key: 'wreck', label: '🏚️ Ancient Wreck' });
   }
 
   function animate() {
@@ -337,7 +340,7 @@
     
     if (distance < WRECK_WARNING_DISTANCE) {
       hasTriggeredWreckWarning = true;
-      showBurstLabel("Samuel's presence lingers here... ancient and watching", wreckObj.mesh);
+      showBurstLabel("⚠️ Samuel's presence lingers here... ancient and watching", wreckObj.mesh);
     }
   }
 

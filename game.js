@@ -43,7 +43,7 @@ function startAudioScene() {
   if (audioRunning) return;
   audioRunning = true;
 
-  // Small random chirps
+  // Birds — small random chirps
   const birdChirp = () => {
     const now = audioCtx.currentTime;
     const nChirps = 2 + Math.floor(Math.random() * 3);
@@ -78,7 +78,7 @@ function startAudioScene() {
     if (Math.random() < 0.7) birdChirp();
   }, 2200);
 
-  // Thunder sounds
+  // Thunder
   const thunder = () => {
     if (!audioCtx) return;
     const dur = 2.8 + Math.random() * 1.4;
@@ -86,7 +86,7 @@ function startAudioScene() {
     const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) {
-      data[i] = (Math.random() * 2 - 1) * (1.0 - i / data.length);
+      data[i] = (Math.random() * 2 - 1) * (1.0 - i / data.length); // decaying noise
     }
 
     const src = audioCtx.createBufferSource();
@@ -159,7 +159,7 @@ const discoveries = {
         <li><strong>Impact:</strong> 40% faster processing</li>
         <li><strong>Scale:</strong> 100k+ predictions/day</li>
       </ul>`},
-  temple: { title: 'Sacred Temple', content: `
+  temple: { title: '⛩️ Sacred Temple', content: `
       <p>The Temple holds ancient wisdom and modern innovation!</p>
       <h3>Real-time Analytics Dashboard</h3>
       <p>Processes 10,000+ events per second with sub-100ms latency.</p>
@@ -175,7 +175,7 @@ const discoveries = {
         <li><strong>Benefit:</strong> 60% faster deploys</li>
         <li><strong>Reliability:</strong> 99.9% uptime</li>
       </ul>`},
-  lighthouse: { title: 'Ancient Lighthouse', content: `
+  lighthouse: { title: '🗼 Ancient Lighthouse', content: `
       <p>The Lighthouse guides travelers safely home.</p>
       <h3>About Me</h3>
       <p>I'm Samuel, a Software and ML Engineer focused on clear, reliable systems.</p>
@@ -183,7 +183,7 @@ const discoveries = {
       <p>📧 <a href="mailto:samuel@example.com">Email</a><br>
          💻 <a target="_blank" href="https://github.com/samuelapoya">GitHub</a><br>
          💼 <a target="_blank" href="https://linkedin.com">LinkedIn</a></p>`},
-  ruins: { title: 'Ancient Ruins', content: `
+  ruins: { title: '🏛️ Ancient Ruins', content: `
       <p>Secrets of distributed systems lie within.</p>
       <h3>Microservices Architecture</h3>
       <ul>
@@ -191,7 +191,7 @@ const discoveries = {
         <li><strong>Scale:</strong> 5M+ requests/day</li>
         <li><strong>Latency:</strong> &lt;50ms</li>
       </ul>`},
-  statue: { title: 'Mystical Pillar', content: `
+  statue: { title: '🗿 Mystical Pillar', content: `
       <p>The ancient pillar watches over the island's knowledge.</p>
       <h3>AI Chatbot System</h3>
       <ul>
@@ -478,7 +478,7 @@ function updateBirds(t) {
   }
 }
 
-// LANDMARKS + TREASURE
+// LANDMARKS, TREASURE
 function createWindmill(x, y, z, r=8) {
   const group = new THREE.Group();
   const tower = new THREE.Mesh(
@@ -634,7 +634,7 @@ function createTreasureChest(x, y, z, r=2.6) {
   addCollider(x, z, r);
 }
 
-// SCATTERED VEGETATION
+// trees, rocks add colliders; bushes do not
 function randomPalm() {
   const a = Math.random() * Math.PI * 2, d = 15 + Math.random() * 55;
   const x = Math.cos(a) * d, z = Math.sin(a) * d;
@@ -652,7 +652,7 @@ function randomPalm() {
   g.position.set(x, 6, z);
   scene.add(g);
 
-  addCollider(x, z, 1.3);
+  addCollider(x, z, 1.3); // block around trunk
 }
 function randomBush() {
   const a = Math.random() * Math.PI * 2, d = 10 + Math.random() * 60;
@@ -671,7 +671,7 @@ function randomRock() {
   rock.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
   rock.scale.set(1, 0.6, 1); rock.castShadow = true; scene.add(rock);
 
-  addCollider(x, z, size * 0.9); // block rocks
+  addCollider(x, z, size * 0.9);
 }
 function randomFlower() {
   const a = Math.random() * Math.PI * 2, d = 10 + Math.random() * 60;
@@ -849,7 +849,7 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// MOVEMENT + COLLISIONS
+// MOVEMENT and COLLISIONS
 function reflectVec(vx, vz, nx, nz) {
   const dot = vx*nx + vz*nz;
   return { x: vx - 2*dot*nx, z: vz - 2*dot*nz };
@@ -868,7 +868,7 @@ function tryMove(dx, dz) {
     return;
   }
 
-  // Landmark collisions
+  // Landmark, tree, rock bounces
   for (const col of colliders) {
     if (col.x === 0 && col.z === 0 && col.r === ISLAND_R) continue;
     const dxC = next.x - col.x;
@@ -937,7 +937,7 @@ function animate() {
     const m = obj.mesh.children.find(ch => ch.material && ch.material.transparent);
     if (m && m.material) {
       m.position.y += Math.sin(t * 2) * 0.02;
-      m.material.opacity = 0.65 + Math.sin(t * 7) * 0.35;
+      m.material.opacity = 0.65 + Math.sin(t * 7) * 0.35; // brighter, quicker blink
     }
     if (obj.type === 'windmill' && obj.mesh.userData.blades) {
       obj.mesh.userData.blades.rotation.z += 0.05;

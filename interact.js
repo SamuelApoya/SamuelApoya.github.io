@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (traditionalPath) traditionalPath.addEventListener('click', showPortfolio);
   if (adventurePath)  adventurePath.addEventListener('click',  showGame);
 
-  // In-page triggers
+  // In-page triggers (hero + nav button)
   switchers.forEach((btn) => btn.addEventListener('click', showGame));
 
   // Exit from game
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* Mobile Hamburger Menu */
+  /* ===== Mobile Hamburger Menu ===== */
   const navToggle = document.getElementById('nav-toggle');
   const mobileNav = document.getElementById('mobile-nav');
 

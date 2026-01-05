@@ -274,11 +274,11 @@ main section > h2,
 }
 
 .hero {
-  width: min(1100px, 92vw);
+  width: 92vw;
   margin: 40px auto 8px;
   display: grid;
-  grid-template-columns: 400px 1fr;
-  gap: 48px;
+  grid-template-columns: 380px 1fr;
+  gap: 40px;
   align-items: start;
 }
 
@@ -370,13 +370,17 @@ main section > h2,
 .hero-skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .skill-badge {
-  padding: 8px 16px;
+  padding: 6px 14px;
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
   color: var(--accent);
   background: rgba(31, 111, 235, 0.1);
   border: 1px solid rgba(31, 111, 235, 0.3);
